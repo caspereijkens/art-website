@@ -1,0 +1,12 @@
+{{ define "main" }}
+  <article>
+    <h1>{{ .Title }}</h1>
+    {{ with .Lastmod }}<time datetime="{{ .Format "2006-01-02" }}">{{ .Format "Jan 2, 2006" }}</time>{{ end }}
+    {{ with .Description }}<p class="gallery-description">{{ . }}</p>{{ end }}
+    <div class="photo-grid">
+      {{ range .Params.photos }}
+        {{ partial "photo.html" (dict "src" .image "alt" .alt "mode" "gallery") }}
+      {{ end }}
+    </div>
+  </article>
+{{ end }}

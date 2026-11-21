@@ -1,0 +1,30 @@
+{{ define "main" }}
+  <h1>{{ .Title }}</h1>
+  <hr>
+  {{ with .Params.shows }}
+    <table id="exhibitions" hidden>
+      <thead>
+        <tr>
+          <th scope="col">Title</th>
+          <th scope="col">Location</th>
+          <th scope="col">Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{ range sort . "date" }}
+          {{ $date := time.AsTime .date }}
+          <tr hidden>
+            <td>{{ .title }}</td>
+            <td>{{ .location }}</td>
+            <td><time datetime="{{ $date.Format "2006-01-02" }}">{{ $date.Format "2 Jan 2006" }}</time></td>
+          </tr>
+        {{ end }}
+      </tbody>
+    </table>
+    <p id="exhibitions-empty" hidden>No upcoming exhibitions.</p>
+    <noscript><p>Enable JavaScript to see upcoming exhibitions.</p></noscript>
+    <script src="/exhibitions.js" defer></script>
+  {{ else }}
+    <p>No upcoming exhibitions.</p>
+  {{ end }}
+{{ end }}

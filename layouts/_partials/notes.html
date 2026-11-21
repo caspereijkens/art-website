@@ -1,0 +1,3 @@
+{{ range . }}
+  <div><a href="{{ .RelPermalink }}">{{ with .Date }}{{ .Format "2006 Jan 2" }} — {{ end }}{{ .Title }}</a></div>
+{{ end }}

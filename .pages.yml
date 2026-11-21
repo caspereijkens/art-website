@@ -1,0 +1,136 @@
+media:
+  - name: photos
+    label: Photos
+    input: assets/images
+    output: /images
+    extensions: [jpg, jpeg, png]
+    rename: safe
+
+components:
+  title:
+    type: string
+    required: true
+  date:
+    type: date
+    required: true
+    options:
+      time: true
+      format: "yyyy-MM-dd'T'HH:mm:ssXXX"
+  legacy-url:
+    type: string
+    label: Existing URL
+    readonly: true
+  body:
+    type: rich-text
+    options:
+      format: markdown
+      media: false
+
+content:
+  - name: artworks
+    label: Artworks
+    type: collection
+    path: content/artworks
+    exclude: [_index.md]
+    format: yaml-frontmatter
+    filename: "{title}.md"
+    fields:
+      - name: title
+        component: title
+      - name: date
+        component: date
+      - name: url
+        component: legacy-url
+      - name: lastmod
+        component: date
+        required: false
+        readonly: true
+        label: Last edited on the Go site
+      - name: description
+        type: text
+      - name: photos
+        type: object
+        list: true
+        fields:
+          - name: image
+            type: image
+            required: true
+            options:
+              media: photos
+          - name: alt
+            label: Alt text
+            type: string
+  - name: notes
+    label: Notes
+    type: collection
+    path: content/notes
+    exclude: [_index.md]
+    format: yaml-frontmatter
+    filename: "{title}.md"
+    fields:
+      - name: title
+        component: title
+      - name: date
+        component: date
+      - name: url
+        component: legacy-url
+      - name: body
+        component: body
+  - name: home
+    label: Home
+    type: file
+    path: content/_index.md
+    format: yaml-frontmatter
+    fields:
+      - name: title
+        component: title
+      - name: cover
+        type: image
+        options:
+          media: photos
+      - name: coveralt
+        label: Cover alt text
+        type: string
+  - name: about
+    label: About
+    type: file
+    path: content/about.md
+    format: yaml-frontmatter
+    fields:
+      - name: title
+        component: title
+      - name: body
+        component: body
+  - name: exhibitions
+    label: Exhibitions
+    type: file
+    path: content/exhibitions.md
+    format: yaml-frontmatter
+    fields:
+      - name: title
+        component: title
+      - name: shows
+        label: Exhibitions
+        type: object
+        list: true
+        fields:
+          - name: title
+            component: title
+          - name: location
+            type: string
+            required: true
+          - name: date
+            type: date
+            required: true
+            options:
+              format: yyyy-MM-dd
+  - name: contact
+    label: Contact
+    type: file
+    path: content/contact.md
+    format: yaml-frontmatter
+    fields:
+      - name: title
+        component: title
+      - name: body
+        component: body

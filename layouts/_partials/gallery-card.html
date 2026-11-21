@@ -1,0 +1,17 @@
+<article class="visual-item">
+  <div class="thumb-grid">
+    {{ range .Params.photos }}
+      <a class="thumbnail-container" href="{{ $.RelPermalink }}" aria-label="View {{ $.Title }}{{ with .alt }}: {{ . }}{{ end }}">
+        {{ partial "photo.html" (dict "src" .image "alt" .alt "mode" "thumb") }}
+      </a>
+    {{ end }}
+  </div>
+  <div class="visual-info">
+    <h2 class="visual-title">{{ .Title }}</h2>
+    <div class="visual-details">
+      {{ with .Date }}<p>{{ .Year }}</p>{{ end }}
+      {{ with .Description }}<p class="gallery-description">{{ . }}</p>{{ end }}
+      <p><a href="{{ .RelPermalink }}">[View..]</a></p>
+    </div>
+  </div>
+</article>

@@ -1,0 +1,18 @@
+{{ define "main" }}
+  {{/* Publish the originals that the old /fs/ links redirect to. */}}
+  {{ range resources.Match "images/legacy/**" }}
+    {{ $legacyURL := .RelPermalink }}
+  {{ end }}
+  <div class="main-container">
+    {{ with .Params.cover }}
+      <div class="left-column cover-container">
+        {{ partial "photo.html" (dict "src" . "alt" $.Params.coveralt "mode" "cover") }}
+      </div>
+    {{ end }}
+    <section class="visuals-container" aria-label="Artworks">
+      {{ range (site.GetPage "/artworks").RegularPages }}
+        {{ partial "gallery-card.html" . }}
+      {{ end }}
+    </section>
+  </div>
+{{ end }}

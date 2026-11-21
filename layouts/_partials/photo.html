@@ -1,0 +1,41 @@
+{{ $mode := .mode }}
+{{ $alt := .alt | default "" }}
+{{ $path := strings.TrimPrefix "/" .src }}
+{{ $source := resources.Get $path }}
+{{ if not $source }}
+  {{ errorf "Photo %q was not found in assets" .src }}
+{{ else }}
+  {{ if eq $mode "thumb" }}
+    {{ $square := math.Min 40 (math.Min $source.Width $source.Height) | int }}
+    {{ $geometry := printf "%dx%d" $square $square }}
+    {{ $fallback := $source.Fill $geometry }}
+    {{ $webp := $source.Fill (printf "%s webp" $geometry) }}
+    <picture class="thumbnail-mini">
+      <source type="image/webp" srcset="{{ $webp.RelPermalink }}">
+      <img src="{{ $fallback.RelPermalink }}" alt="" width="{{ $square }}" height="{{ $square }}" loading="lazy">
+    </picture>
+    <span class="thumbnail-preview" aria-hidden="true">
+      {{ partial "photo.html" (dict "src" .src "alt" "" "mode" "preview") }}
+    </span>
+  {{ else }}
+    {{ $smallWidth := math.Min 600 $source.Width | int }}
+    {{ $largeWidth := math.Min 1080 $source.Width | int }}
+    {{ if eq $mode "preview" }}{{ $largeWidth = $smallWidth }}{{ end }}
+    {{ $small := $source.Resize (printf "%dx" $smallWidth) }}
+    {{ $smallWebp := $source.Resize (printf "%dx webp" $smallWidth) }}
+    {{ $large := $source.Resize (printf "%dx" $largeWidth) }}
+    {{ $largeWebp := $source.Resize (printf "%dx webp" $largeWidth) }}
+    {{ $sizes := "(max-width: 767px) 100vw, 38vw" }}
+    {{ if eq $mode "gallery" }}{{ $sizes = "(max-width: 768px) 100vw, 33vw" }}{{ end }}
+    {{ if eq $mode "preview" }}{{ $sizes = "150px" }}{{ end }}
+    {{ if eq $mode "gallery" }}<a class="photo-item" href="{{ $large.RelPermalink }}" aria-label="{{ with $alt }}View larger image: {{ . }}{{ else }}View larger image{{ end }}">{{ end }}
+    <picture>
+      <source type="image/webp" srcset="{{ $smallWebp.RelPermalink }} {{ $smallWidth }}w{{ if gt $largeWidth $smallWidth }}, {{ $largeWebp.RelPermalink }} {{ $largeWidth }}w{{ end }}" sizes="{{ $sizes }}">
+      <img src="{{ $small.RelPermalink }}"
+        srcset="{{ $small.RelPermalink }} {{ $smallWidth }}w{{ if gt $largeWidth $smallWidth }}, {{ $large.RelPermalink }} {{ $largeWidth }}w{{ end }}"
+        sizes="{{ $sizes }}" width="{{ $small.Width }}" height="{{ $small.Height }}"
+        alt="{{ $alt }}"{{ if ne $mode "cover" }} loading="lazy"{{ end }}>
+    </picture>
+    {{ if eq $mode "gallery" }}</a>{{ end }}
+  {{ end }}
+{{ end }}

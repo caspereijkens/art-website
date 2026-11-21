@@ -1,0 +1,10 @@
+/info /about/ 301
+/info/ /about/ 301
+/visuals /artworks/ 301
+/visuals/ /artworks/ 301
+/stories /notes/ 301
+/stories/ /notes/ 301
+/visuals/* /artworks/:splat 301
+/stories/* /notes/:splat 301
+/fs/visuals/:gallery/thumbnails/:size/:file /images/legacy/visuals/:gallery/:file 301
+/fs/visuals/* /images/legacy/visuals/:splat 301

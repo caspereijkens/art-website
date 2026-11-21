@@ -1,0 +1,11 @@
+{{ define "main" }}
+  <h1{{ if ne .Section "artworks" }} class="visually-hidden"{{ end }}>{{ .Title }}</h1>
+  <hr>
+  {{ if eq .Section "artworks" }}
+    {{ range .RegularPages }}
+      {{ partial "gallery-card.html" . }}
+    {{ end }}
+  {{ else if eq .Section "notes" }}
+    {{ partial "notes.html" .RegularPages }}
+  {{ end }}
+{{ end }}
